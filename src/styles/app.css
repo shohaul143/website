@@ -1,0 +1,32 @@
+@import "@fontsource-variable/caveat";
+
+/* Theme defaults that used to live in shadcn.css. */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.font-signature {
+  font-family: "Caveat Variable", cursive;
+}
+
+/* Circular theme reveal; the clip-path animation lives in site-layout.tsx. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent) transparent;
+}
+
+html,
+body {
+  min-height: 100%;
+}

@@ -1,0 +1,22 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env
+.dev.vars*
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+__unconfig*
+todos.json
+!.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.playwright-mcp
+
+# dotenv environment variable files
+.env.*
+!.env.example
