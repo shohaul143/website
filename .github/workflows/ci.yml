@@ -48,7 +48,7 @@ jobs:
 
     environment:
       name: production
-      url: https://tanstack-starter.shohaul143.workers.dev
+      url: https://hey.shohaul143.workers.dev
 
     permissions:
       contents: read
