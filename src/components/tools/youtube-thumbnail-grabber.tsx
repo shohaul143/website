@@ -55,18 +55,6 @@ export function YouTubeThumbnailGrabber() {
     }, 2000);
   };
 
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        setInput(text);
-        setIsMaxResMissing(false);
-      }
-    } catch {
-      // Clipboard access may be denied; input focus allows manual paste
-    }
-  };
-
   const handleClear = () => {
     setInput("");
     setIsMaxResMissing(false);
@@ -170,8 +158,7 @@ export function YouTubeThumbnailGrabber() {
                 setInput(e.target.value);
                 setIsMaxResMissing(false);
               }}
-              placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-              className="h-10 pr-20 text-sm"
+              className="h-10 pr-10 text-sm"
               aria-invalid={isInvalid}
               autoComplete="off"
               spellCheck={false}
@@ -189,16 +176,6 @@ export function YouTubeThumbnailGrabber() {
                   <X className="size-3.5" />
                 </Button>
               )}
-              <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                onClick={handlePaste}
-                className="text-xs text-muted-foreground hover:text-foreground"
-              >
-                <Clipboard data-icon="inline-start" className="size-3" />
-                Paste
-              </Button>
             </div>
           </div>
 
