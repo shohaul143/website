@@ -33,7 +33,7 @@ export function SiteLayout() {
       </header>
 
       <main className="flex-1">
-        <Container className="py-16">
+        <Container className="py-8">
           <Outlet />
         </Container>
       </main>
