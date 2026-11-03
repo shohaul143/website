@@ -158,6 +158,7 @@ export function YouTubeThumbnailGrabber() {
                 setInput(e.target.value);
                 setIsMaxResMissing(false);
               }}
+              placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
               className="h-10 pr-10 text-sm"
               aria-invalid={isInvalid}
               autoComplete="off"
