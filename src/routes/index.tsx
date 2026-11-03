@@ -1,15 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpRight, Code, FileStack, Image, Layers } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Code, Layers } from "lucide-react";
+
+import { ToolCard } from "#/components/tools/tool-card";
+import { tools } from "#/lib/tools";
 
 export const Route = createFileRoute("/")({ component: Home });
-
-type Tool = {
-  name: string;
-  description: string;
-  href: string;
-  icon: LucideIcon;
-};
 
 type Project = {
   name: string;
@@ -18,21 +14,6 @@ type Project = {
   href: string;
   icon: LucideIcon;
 };
-
-const tools: Array<Tool> = [
-  {
-    name: "YouTube Thumbnail Grabber",
-    description: "Paste a URL, get the thumbnail.",
-    href: "/tools/yt-thumbnail",
-    icon: Image,
-  },
-  {
-    name: "File Converter",
-    description: "Convert between common file formats.",
-    href: "/tools/file-converter",
-    icon: FileStack,
-  },
-];
 
 const projects: Array<Project> = [
   {
@@ -58,20 +39,29 @@ function Home() {
       <div className="max-w-xl">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Shohaul</h1>
 
-        <p className="mt-3 max-w-md text-pretty text-lg text-muted-foreground">
-          Building things for the web, usually gaming in my downtime, and always got music playing
-          in the background.
+        <p className="mt-3 max-w-xl text-pretty text-lg text-muted-foreground">
+          A collection of things I spend my time on, from projects and personal interests to ideas,
+          experiments, and everything in between.
         </p>
       </div>
 
       <section className="mt-14">
-        <div className="flex items-baseline justify-between gap-4 border-b pb-2.5">
-          <h2 className="text-lg font-semibold tracking-tight">Tools</h2>
+        <div className="flex items-center justify-between gap-4 border-b pb-2.5">
+          <Link
+            to="/tools"
+            className="group inline-flex items-center gap-1.5 text-lg font-semibold tracking-tight transition-colors hover:text-muted-foreground"
+          >
+            <span>Tools</span>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+            />
+          </Link>
           <p className="text-xs text-muted-foreground">Small utilities, nothing fancy.</p>
         </div>
 
         <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-          {tools.map((tool) => (
+          {tools.slice(0, 4).map((tool) => (
             <li key={tool.name}>
               <ToolCard tool={tool} />
             </li>
@@ -94,25 +84,6 @@ function Home() {
         </ul>
       </section>
     </>
-  );
-}
-
-function ToolCard({ tool }: { tool: Tool }) {
-  const Icon = tool.icon;
-
-  return (
-    <a
-      href={tool.href}
-      className="group flex items-center gap-4 border bg-card px-5 py-4 transition-colors hover:border-foreground/20 hover:bg-muted/30 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center border text-muted-foreground transition-colors group-hover:text-foreground">
-        <Icon aria-hidden="true" className="size-4" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <span className="text-sm font-medium">{tool.name}</span>
-        <span className="block text-xs text-muted-foreground">{tool.description}</span>
-      </div>
-    </a>
   );
 }
 
