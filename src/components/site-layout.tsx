@@ -14,7 +14,7 @@ const lastUpdated = new Intl.DateTimeFormat("en-US", {
 }).format(buildDate);
 const copyrightYear = buildDate.getUTCFullYear();
 
-export const githubUrl = "https://github.com/shohaul143/tanstack-starter";
+export const githubUrl = "https://github.com/shohaul143/website";
 const githubProfileUrl = "https://github.com/shohaul143";
 const freePalestineUrl = "https://www.jewishvoiceforpeace.org";
 
@@ -24,12 +24,8 @@ export function SiteLayout() {
       <header className="border-b">
         <Container>
           <nav aria-label="Main" className="flex h-16 items-center justify-between">
-            <Link
-              to="/"
-              aria-label="TanStack Starter home"
-              className="font-signature text-4xl leading-none"
-            >
-              ts
+            <Link to="/" aria-label="Shohaul home" className="font-signature text-4xl leading-none">
+              sh
             </Link>
             <ThemeToggle />
           </nav>
