@@ -37,7 +37,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "dark",
       },
       {
-        title: "TanStack Starter",
+        title: "Shohaul",
       },
     ],
     links: [
