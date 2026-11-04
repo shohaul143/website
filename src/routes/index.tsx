@@ -37,11 +37,12 @@ function Home() {
   return (
     <>
       <div className="max-w-xl">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Shohaul</h1>
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Hello!</h1>
 
         <p className="mt-3 max-w-xl text-pretty text-lg text-muted-foreground">
-          A collection of things I spend my time on, from projects and personal interests to ideas,
-          experiments, and everything in between.
+          I'm Shohaul. Welcome to my corner of the internet. There's a bit of everything here,
+          including things I spend my time on, from projects and personal interests to ideas,
+          experiments, and everything in between. No roadmap, what I ship, I maintain.
         </p>
       </div>
 
