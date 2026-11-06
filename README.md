@@ -41,7 +41,7 @@ pnpm run deploy
 
 ## Writing
 
-Posts live in `src/content/posts` and can be `.md` or `.mdx`. Both go through the same MDX pipeline at build time.
+Posts live in `src/content/posts` and default to `.md`. Use `.mdx` only when a post genuinely needs an authored React component; both formats go through the same MDX pipeline at build time.
 
 ```yaml
 ---
