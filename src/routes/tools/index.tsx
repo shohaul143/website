@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ToolCard } from "#/components/tools/tool-card";
+import { site } from "#/lib/site";
 import { tools } from "#/lib/tools";
 
 export const Route = createFileRoute("/tools/")({
   head: () => ({
     meta: [
       {
-        title: "Tools | Shohaul",
+        title: `Tools | ${site.name}`,
       },
       {
         name: "description",
