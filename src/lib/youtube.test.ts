@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
+
 import { extractYouTubeVideoId, getThumbnailOptions } from "./youtube";
 
 describe("extractYouTubeVideoId", () => {
@@ -27,7 +28,7 @@ describe("extractYouTubeVideoId", () => {
     );
   });
 
-  it("accepts direct 11-char video ID", () => {
+  it("accepts a direct 11-character video ID", () => {
     expect(extractYouTubeVideoId("dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
     expect(extractYouTubeVideoId("  dQw4w9WgXcQ  ")).toBe("dQw4w9WgXcQ");
   });
@@ -41,13 +42,17 @@ describe("extractYouTubeVideoId", () => {
 });
 
 describe("getThumbnailOptions", () => {
-  it("generates correct URLs for video ID", () => {
+  it("builds one option per quality with derived metadata", () => {
     const options = getThumbnailOptions("dQw4w9WgXcQ");
-    expect(options).toHaveLength(5);
-    expect(options[0].url).toBe("https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg");
-    expect(options[1].url).toBe("https://img.youtube.com/vi/dQw4w9WgXcQ/sddefault.jpg");
-    expect(options[2].url).toBe("https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg");
-    expect(options[3].url).toBe("https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg");
-    expect(options[4].url).toBe("https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg");
+
+    expect(options.map((option) => option.id)).toEqual(["maxres", "sd", "hq", "mq"]);
+    expect(options.map((option) => option.url)).toEqual([
+      "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+      "https://img.youtube.com/vi/dQw4w9WgXcQ/sddefault.jpg",
+      "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+      "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+    ]);
+    expect(options.map((option) => option.aspectRatio)).toEqual(["16:9", "4:3", "4:3", "16:9"]);
+    expect(options[0]?.filenameSuffix).toBe("maxres-1280x720");
   });
 });
