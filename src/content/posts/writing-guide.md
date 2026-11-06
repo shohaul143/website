@@ -174,11 +174,11 @@ The checkboxes are displayed as status markers. They are not interactive control
 Use a table when readers need to compare the same information across several items. Keep the columns short and the number of rows manageable. A table is a poor place for long explanations, and wide tables scroll horizontally on smaller screens.
 
 ```md
-| Format | Use it for |
-| :--- | :--- |
-| `**bold**` | A term that needs emphasis |
-| `` `code` `` | A command or filename |
-| Link | A source or related page |
+| Format       | Use it for                 |
+| :----------- | :------------------------- |
+| `**bold**`   | A term that needs emphasis |
+| `` `code` `` | A command or filename      |
+| Link         | A source or related page   |
 ```
 
 GFM also supports strikethrough, automatic links, and footnotes. Use footnotes for brief supporting details that would interrupt the paragraph, not for information the reader needs in order to follow the main point.
@@ -191,7 +191,7 @@ For a note that needs visual separation, use the site's `Callout` component in a
 
 ```mdx
 <Callout type="tip" title="Before you run this">
-Check that the command points to the right environment.
+  Check that the command points to the right environment.
 </Callout>
 ```
 
