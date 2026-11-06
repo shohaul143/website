@@ -2,10 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, ArrowUpRight, Code, Layers } from "lucide-react";
 
+import { interactiveCardClassName } from "#/components/card";
+import { PostRow } from "#/components/posts/post-card";
 import { ToolCard } from "#/components/tools/tool-card";
+import { fetchLatestPosts } from "#/lib/posts/posts.functions";
+import { repoUrl, site } from "#/lib/site";
 import { tools } from "#/lib/tools";
+import { cn } from "#/lib/utils";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  loader: () => fetchLatestPosts(),
+  component: Home,
+});
 
 type Project = {
   name: string;
@@ -20,7 +28,7 @@ const projects: Array<Project> = [
     name: "website",
     description: "Personal website built with TanStack Start, deployed on Cloudflare Workers.",
     category: "Site",
-    href: "https://github.com/shohaul143/website",
+    href: repoUrl,
     icon: Code,
   },
   {
@@ -28,19 +36,21 @@ const projects: Array<Project> = [
     description:
       "Opinionated starter template for TanStack Start with Tailwind CSS 4, shadcn/ui, and Cloudflare Workers.",
     category: "Template",
-    href: "https://github.com/shohaul143/tanstack-starter",
+    href: `https://github.com/${site.github.owner}/tanstack-starter`,
     icon: Layers,
   },
 ];
 
 function Home() {
+  const latestPosts = Route.useLoaderData();
+
   return (
     <>
       <div className="max-w-xl">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Hello!</h1>
 
         <p className="mt-3 max-w-xl text-pretty text-lg text-muted-foreground">
-          I'm Shohaul. Welcome to my corner of the internet. There's a bit of everything here,
+          I'm {site.name}. Welcome to my corner of the internet. There's a bit of everything here,
           including things I spend my time on, from projects and personal interests to ideas,
           experiments, and everything in between. No roadmap, what I ship, I maintain.
         </p>
@@ -71,6 +81,34 @@ function Home() {
       </section>
 
       <section className="mt-14">
+        <div className="flex items-center justify-between gap-4 border-b pb-2.5">
+          <Link
+            to="/posts"
+            className="group inline-flex items-center gap-1.5 text-lg font-semibold tracking-tight transition-colors hover:text-muted-foreground"
+          >
+            <span>Latest Writing</span>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+            />
+          </Link>
+          <p className="text-xs text-muted-foreground">Things worth sharing.</p>
+        </div>
+
+        {latestPosts.length > 0 ? (
+          <ul className="mt-2 divide-y">
+            {latestPosts.map((post) => (
+              <li key={post.slug}>
+                <PostRow post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-muted-foreground">Nothing published yet.</p>
+        )}
+      </section>
+
+      <section className="mt-14">
         <div className="flex items-baseline justify-between gap-4 border-b pb-2.5">
           <h2 className="text-lg font-semibold tracking-tight">Things I've made</h2>
           <p className="text-xs text-muted-foreground">Side projects and experiments.</p>
@@ -96,7 +134,10 @@ function ProjectCard({ project }: { project: Project }) {
       href={project.href}
       target="_blank"
       rel="noreferrer"
-      className="group flex h-full min-h-[148px] flex-col justify-between border bg-card p-5 transition-colors hover:border-foreground/20 hover:bg-muted/30 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+      className={cn(
+        interactiveCardClassName,
+        "flex h-full min-h-[148px] flex-col justify-between p-5",
+      )}
     >
       <span className="flex items-start justify-between gap-3">
         <span className="flex size-9 items-center justify-center border text-muted-foreground transition-colors group-hover:text-foreground">
