@@ -1,6 +1,5 @@
 @import "@fontsource-variable/caveat";
 
-/* Theme defaults that used to live in shadcn.css. */
 :root {
   color-scheme: light;
 }
@@ -21,7 +20,6 @@
 }
 
 * {
-  box-sizing: border-box;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent) transparent;
 }
@@ -29,4 +27,34 @@
 html,
 body {
   min-height: 100%;
+}
+
+/* Tailwind Typography styles the article; these rules cover the parts it
+   cannot: Shiki's dual light/dark tokens and wrapped heading anchors. */
+.prose .shiki {
+  background-color: var(--shiki-light-bg);
+  color: var(--shiki-light);
+}
+
+.prose .shiki span {
+  color: var(--shiki-light);
+}
+
+.dark .prose .shiki {
+  background-color: var(--shiki-dark-bg);
+  color: var(--shiki-dark);
+}
+
+.dark .prose .shiki span {
+  color: var(--shiki-dark);
+}
+
+.prose .heading-anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose .heading-anchor:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--muted-foreground);
 }
