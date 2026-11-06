@@ -8,71 +8,69 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { Button, buttonVariants } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import {
   extractYouTubeVideoId,
   getThumbnailOptions,
+  thumbnailSpecs,
   type ThumbnailOption,
   type ThumbnailQuality,
 } from "#/lib/youtube";
+
 const SAMPLE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+
+// YouTube serves a 120×90 placeholder when maxresdefault.jpg is missing.
+const MISSING_MAX_RES_DIMENSIONS = { width: 120, height: 90 };
 
 export function YouTubeThumbnailGrabber() {
   const [input, setInput] = useState("");
   const [selectedQuality, setSelectedQuality] = useState<ThumbnailQuality>("maxres");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [isMaxResMissing, setIsMaxResMissing] = useState(false);
+  const [maxResMissingFor, setMaxResMissingFor] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const inputId = useId();
+  const errorId = useId();
 
-  const videoId = useMemo(() => extractYouTubeVideoId(input), [input]);
+  const videoId = extractYouTubeVideoId(input);
   const hasInput = input.trim().length > 0;
   const isInvalid = hasInput && !videoId;
+  const thumbnailOptions = videoId ? getThumbnailOptions(videoId) : [];
+  const isMaxResMissing = videoId !== null && maxResMissingFor === videoId;
+  const maxResOption = thumbnailOptions.find((option) => option.id === "maxres");
+  const selectedOption = thumbnailOptions.find((option) => option.id === selectedQuality);
+  const fallbackOption =
+    thumbnailOptions.find((option) => option.id === "sd") ??
+    thumbnailOptions.find((option) => option.id === "hq");
+  const activeOption =
+    selectedQuality === "maxres" && isMaxResMissing
+      ? fallbackOption
+      : (selectedOption ?? thumbnailOptions[0]);
+  const imageCopyKey = activeOption ? `image-${activeOption.id}` : "";
+  const urlCopyKey = activeOption ? `url-${activeOption.id}` : "";
 
-  const thumbnailOptions = useMemo(() => {
-    if (!videoId) return [];
-    return getThumbnailOptions(videoId);
-  }, [videoId]);
-
-  const activeOption: ThumbnailOption | undefined = useMemo(() => {
-    if (!thumbnailOptions.length) return undefined;
-    if (selectedQuality === "maxres" && isMaxResMissing) {
-      return (
-        thumbnailOptions.find((opt) => opt.id === "sd") ??
-        thumbnailOptions.find((opt) => opt.id === "hq")
-      );
+  useEffect(() => {
+    if (!copiedKey) {
+      return;
     }
-    return thumbnailOptions.find((opt) => opt.id === selectedQuality) ?? thumbnailOptions[0];
-  }, [thumbnailOptions, selectedQuality, isMaxResMissing]);
 
-  const setTemporaryCopied = (key: string) => {
-    setCopiedKey(key);
-    setTimeout(() => {
-      setCopiedKey((prev) => (prev === key ? null : prev));
-    }, 2000);
-  };
+    const timeout = setTimeout(() => setCopiedKey(null), 2000);
+    return () => clearTimeout(timeout);
+  }, [copiedKey]);
 
-  const handleClear = () => {
-    setInput("");
-    setIsMaxResMissing(false);
-  };
-
-  const handleSample = () => {
-    setInput(SAMPLE_URL);
-    setIsMaxResMissing(false);
-  };
-
-  const handleCopyUrl = async (url: string, key: string) => {
+  const copyText = async (url: string, key: string) => {
     try {
       await navigator.clipboard.writeText(url);
-      setTemporaryCopied(key);
+      setCopiedKey(key);
     } catch {
-      // Fallback
+      // Clipboard access can be denied; leave the button unchanged.
     }
   };
+
+  const handleClear = () => setInput("");
+  const handleSample = () => setInput(SAMPLE_URL);
 
   const handleDownload = async (option: ThumbnailOption) => {
     if (!videoId) return;
@@ -92,54 +90,61 @@ export function YouTubeThumbnailGrabber() {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(blobUrl);
     } catch {
-      // Fallback: open in new tab
       window.open(option.url, "_blank", "noopener,noreferrer");
     } finally {
       setIsDownloading(false);
     }
   };
 
+  const loadImageBlob = async (url: string): Promise<Blob> => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = url;
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error("Failed to load image"));
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Could not get canvas context");
+    context.drawImage(img, 0, 0);
+
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Could not encode image"));
+        }
+      }, "image/png");
+    });
+  };
+
   const handleCopyImage = async (option: ThumbnailOption, key: string) => {
     try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = option.url;
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error("Failed to load image"));
-      });
+      const blob = await loadImageBlob(option.url);
 
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Could not get canvas context");
-      ctx.drawImage(img, 0, 0);
-
-      canvas.toBlob(async (blob) => {
-        if (blob && navigator.clipboard && "ClipboardItem" in window) {
-          try {
-            await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-            setTemporaryCopied(key);
-            return;
-          } catch {
-            // ClipboardItem write failed
-          }
+      if (navigator.clipboard && "ClipboardItem" in window) {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          setCopiedKey(key);
+          return;
+        } catch {
+          // ClipboardItem writes can fail; copy the URL instead.
         }
-        // Fallback to URL copy
-        await navigator.clipboard.writeText(option.url);
-        setTemporaryCopied(key);
-      }, "image/png");
+      }
+
+      await copyText(option.url, key);
     } catch {
-      // Fallback to URL copy
-      await navigator.clipboard.writeText(option.url);
-      setTemporaryCopied(key);
+      await copyText(option.url, key);
     }
   };
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Input section */}
       <section className="border bg-card p-5 sm:p-6">
         <label htmlFor={inputId} className="block text-sm font-medium">
           YouTube Video URL or ID
@@ -154,18 +159,16 @@ export function YouTubeThumbnailGrabber() {
               id={inputId}
               type="text"
               value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                setIsMaxResMissing(false);
-              }}
+              onChange={(event) => setInput(event.target.value)}
               placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
               className="h-10 pr-10 text-sm"
               aria-invalid={isInvalid}
+              aria-describedby={isInvalid ? errorId : undefined}
               autoComplete="off"
               spellCheck={false}
             />
             <div className="absolute inset-y-0 right-1.5 flex items-center gap-1">
-              {hasInput && (
+              {hasInput ? (
                 <Button
                   type="button"
                   variant="ghost"
@@ -176,7 +179,7 @@ export function YouTubeThumbnailGrabber() {
                 >
                   <X className="size-3.5" />
                 </Button>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -192,14 +195,13 @@ export function YouTubeThumbnailGrabber() {
           </Button>
         </div>
 
-        {isInvalid && (
-          <p className="mt-2 text-xs text-destructive">
+        {isInvalid ? (
+          <p id={errorId} role="alert" className="mt-2 text-xs text-destructive">
             Could not find a valid YouTube video ID. Please check the URL and try again.
           </p>
-        )}
+        ) : null}
       </section>
 
-      {/* Main Preview & Actions */}
       {videoId && activeOption ? (
         <div className="flex flex-col gap-6">
           <section className="border bg-card p-5 sm:p-6">
@@ -211,22 +213,20 @@ export function YouTubeThumbnailGrabber() {
                 </p>
               </div>
 
-              {/* Quality selector tabs */}
               <div
                 role="group"
                 aria-label="Resolution selector"
                 className="flex flex-wrap items-center gap-1.5"
               >
                 {thumbnailOptions
-                  .filter((opt) => opt.id !== "default")
+                  .filter((option) => option.selectable)
                   .map((option) => {
                     const isSelected = selectedQuality === option.id;
                     return (
                       <button
                         key={option.id}
                         type="button"
-                        role="radio"
-                        aria-checked={isSelected}
+                        aria-pressed={isSelected}
                         onClick={() => setSelectedQuality(option.id)}
                         className={`border px-2.5 py-1 text-xs font-medium transition-colors ${
                           isSelected
@@ -234,15 +234,13 @@ export function YouTubeThumbnailGrabber() {
                             : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
                         }`}
                       >
-                        {option.label.split(" ")[0]} ({option.dimensions.width}×
-                        {option.dimensions.height})
+                        {option.shortLabel} ({option.dimensions.width}×{option.dimensions.height})
                       </button>
                     );
                   })}
               </div>
             </div>
 
-            {/* Thumbnail Display */}
             <div className="mt-4 flex flex-col items-center">
               <div className="relative w-full overflow-hidden border bg-muted/40">
                 <img
@@ -251,34 +249,32 @@ export function YouTubeThumbnailGrabber() {
                   alt={`YouTube thumbnail for video ${videoId} at ${activeOption.resolution}`}
                   className="mx-auto block max-h-[480px] w-full object-contain"
                   loading="eager"
-                  onLoad={(e) => {
-                    const img = e.currentTarget;
-                    // YouTube returns a 120x90 image if maxresdefault doesn't exist
+                  onLoad={(event) => {
+                    const img = event.currentTarget;
                     if (
                       selectedQuality === "maxres" &&
-                      img.naturalWidth === 120 &&
-                      img.naturalHeight === 90
+                      img.naturalWidth === MISSING_MAX_RES_DIMENSIONS.width &&
+                      img.naturalHeight === MISSING_MAX_RES_DIMENSIONS.height
                     ) {
-                      setIsMaxResMissing(true);
+                      setMaxResMissingFor(videoId);
                     }
                   }}
                   onError={() => {
                     if (selectedQuality === "maxres") {
-                      setIsMaxResMissing(true);
+                      setMaxResMissingFor(videoId);
                     }
                   }}
                 />
               </div>
 
-              {isMaxResMissing && selectedQuality === "maxres" && (
+              {isMaxResMissing && selectedQuality === "maxres" && maxResOption ? (
                 <div className="mt-3 w-full border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-900 dark:text-amber-200">
-                  HD resolution (1280×720) is not available for this video from YouTube. Displaying
-                  standard definition ({activeOption.dimensions.width}×
-                  {activeOption.dimensions.height}) instead.
+                  HD resolution ({maxResOption.dimensions.width}×{maxResOption.dimensions.height})
+                  is not available for this video from YouTube. Displaying standard definition (
+                  {activeOption.dimensions.width}×{activeOption.dimensions.height}) instead.
                 </div>
-              )}
+              ) : null}
 
-              {/* Action Toolbar */}
               <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-3 border-t pt-4">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">{activeOption.resolution}</span>
@@ -302,9 +298,9 @@ export function YouTubeThumbnailGrabber() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleCopyImage(activeOption, `main-img-${activeOption.id}`)}
+                    onClick={() => handleCopyImage(activeOption, imageCopyKey)}
                   >
-                    {copiedKey === `main-img-${activeOption.id}` ? (
+                    {copiedKey === imageCopyKey ? (
                       <>
                         <Check data-icon="inline-start" className="size-3.5 text-emerald-500" />
                         Copied!
@@ -321,9 +317,9 @@ export function YouTubeThumbnailGrabber() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleCopyUrl(activeOption.url, `main-url-${activeOption.id}`)}
+                    onClick={() => copyText(activeOption.url, urlCopyKey)}
                   >
-                    {copiedKey === `main-url-${activeOption.id}` ? (
+                    {copiedKey === urlCopyKey ? (
                       <>
                         <Check data-icon="inline-start" className="size-3.5 text-emerald-500" />
                         Copied URL!
@@ -351,7 +347,6 @@ export function YouTubeThumbnailGrabber() {
           </section>
         </div>
       ) : (
-        /* Empty State / How to use */
         <section className="flex flex-col items-center justify-center border border-dashed bg-card/50 p-8 text-center sm:p-12">
           <div className="flex size-12 items-center justify-center border text-muted-foreground">
             <ImageIcon className="size-6" />
@@ -377,10 +372,11 @@ export function YouTubeThumbnailGrabber() {
             <div className="border bg-background p-3">
               <span className="font-medium text-foreground">Highest resolutions</span>
               <ul className="mt-1 list-inside list-disc space-y-0.5 text-[11px]">
-                <li>HD 1280 × 720 (maxres)</li>
-                <li>SD 640 × 480</li>
-                <li>HQ 480 × 360</li>
-                <li>MQ 320 × 180</li>
+                {thumbnailSpecs
+                  .filter((option) => option.selectable)
+                  .map((option) => (
+                    <li key={option.id}>{option.resolution}</li>
+                  ))}
               </ul>
             </div>
           </div>
