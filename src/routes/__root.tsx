@@ -8,18 +8,10 @@ import {
 
 import { NotFound } from "#/components/not-found";
 import { SiteLayout } from "#/components/site-layout";
+import { site } from "#/lib/site";
+import { themeScript } from "#/lib/theme";
 import appCss from "../styles/app.css?url";
 import shadcnCss from "../styles/shadcn.css?url";
-
-const themeScript = `(() => {
-  let theme = "dark";
-  try {
-    if (localStorage.getItem("theme") === "light") theme = "light";
-  } catch {}
-  const root = document.documentElement;
-  root.classList.toggle("dark", theme === "dark");
-  root.style.colorScheme = theme;
-})();`;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -37,7 +29,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "dark",
       },
       {
-        title: "Shohaul",
+        title: site.name,
       },
     ],
     links: [
