@@ -14,19 +14,19 @@ Personal website built with TanStack Start, deployed on Cloudflare Workers.
 
 ```bash
 # Install dependencies
-pnpm install
+vp install
 
 # Start dev server (port 3000)
-pnpm run dev
+vp dev
 
 # Type-check + lint
-pnpm run check
+vp check
 
 # Run tests
-pnpm run test
+vp test
 
 # Generate route tree after adding routes
-pnpm run generate-routes
+vp run generate-routes
 ```
 
 ## Deploy
@@ -36,7 +36,7 @@ pnpm run generate-routes
 wrangler login
 
 # Build and deploy
-pnpm run deploy
+vp run deploy
 ```
 
 ## Writing
@@ -57,9 +57,10 @@ publishedAt: "2026-11-05"
 ```
 
 - `draft: true` keeps a post out of `/posts`, the homepage, the sitemap, RSS, and its own route.
+- The build automatically generates `/rss.xml`, `/sitemap.xml`, and `/robots.txt` from published posts.
 - Images in article content are downloaded and optimized at build time. Generated files live under `public/generated`.
 - When no `coverImage` is supplied, a branded social card is generated during the build.
-- `pnpm run content:build` regenerates the content collection and image assets without starting Vite.
+- `vp run content:build` regenerates the content collection and image assets without starting Vite.
 
 ## Project Structure
 
