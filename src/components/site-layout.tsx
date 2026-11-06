@@ -4,6 +4,8 @@ import type { MouseEvent } from "react";
 
 import { Container } from "#/components/container";
 import { Button } from "#/components/ui/button";
+import { repoUrl, site } from "#/lib/site";
+import { applyTheme, DARK_THEME } from "#/lib/theme";
 
 const buildDate = new Date(__BUILD_DATE__);
 const lastUpdated = new Intl.DateTimeFormat("en-US", {
@@ -14,8 +16,6 @@ const lastUpdated = new Intl.DateTimeFormat("en-US", {
 }).format(buildDate);
 const copyrightYear = buildDate.getUTCFullYear();
 
-export const githubUrl = "https://github.com/shohaul143/website";
-const githubProfileUrl = "https://github.com/shohaul143";
 const freePalestineUrl = "https://www.jewishvoiceforpeace.org";
 
 export function SiteLayout() {
@@ -24,7 +24,11 @@ export function SiteLayout() {
       <header className="border-b">
         <Container>
           <nav aria-label="Main" className="flex h-16 items-center justify-between">
-            <Link to="/" aria-label="Shohaul home" className="font-signature text-4xl leading-none">
+            <Link
+              to="/"
+              aria-label={`${site.name} home`}
+              className="font-signature text-4xl leading-none"
+            >
               sh
             </Link>
             <ThemeToggle />
@@ -43,20 +47,8 @@ export function SiteLayout() {
   );
 }
 
-function applyTheme(isDark: boolean) {
-  const root = document.documentElement;
-  root.classList.toggle("dark", isDark);
-  root.style.colorScheme = isDark ? "dark" : "light";
-
-  try {
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  } catch {
-    // Storage can be blocked; the theme still changes for this page view.
-  }
-}
-
 function toggleTheme(event: MouseEvent<HTMLButtonElement>) {
-  const isDark = !document.documentElement.classList.contains("dark");
+  const isDark = !document.documentElement.classList.contains(DARK_THEME);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (!document.startViewTransition || reduceMotion) {
@@ -122,12 +114,12 @@ function SiteFooter() {
           <p className="text-sm text-muted-foreground">
             © {copyrightYear}{" "}
             <a
-              href={githubProfileUrl}
+              href={site.author.url}
               target="_blank"
               rel="noreferrer"
               className="underline-offset-4 hover:text-foreground hover:underline"
             >
-              Shohaul
+              {site.author.name}
             </a>
           </p>
           <p className="text-xs text-muted-foreground">
@@ -137,7 +129,7 @@ function SiteFooter() {
 
         <div className="flex flex-col items-end gap-1">
           <a
-            href={githubUrl}
+            href={repoUrl}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
