@@ -19,6 +19,7 @@ My setup has four pieces:
 These pieces have different jobs. Keeping them separate makes the environment easier to maintain. I don't need to use the same installation method for every tool.
 
 This is a snapshot of my current setup. Some packages come with Ubuntu, others I added. Versions change as I update the machine.
+
 ## 1. The Windows side: Windows Terminal
 
 Windows Terminal hosts command-line sessions. It's not the shell itself and doesn't provide the Linux environment. A terminal profile launches a shell or another program, and Windows Terminal gives that session a window, tabs, panes, and settings.
@@ -99,15 +100,15 @@ The package list shows which shells are installed. It doesn't show which one is 
 
 A few tools make terminal navigation and output more pleasant:
 
-| Tool | What it does | Where it helps |
-| --- | --- | --- |
-| [Starship](https://starship.rs/) (`starship`) | A customizable prompt that works across shells. | Showing useful context such as the current directory, Git state, and runtime information without hard-coding one prompt for every shell. |
-| [zoxide](https://github.com/ajeetdsouza/zoxide) (`zoxide`) | Learns frequently used directories and provides a smarter way to jump between them. | Moving between projects without repeatedly typing long paths. |
-| [fzf](https://github.com/junegunn/fzf) (`fzf`) | An interactive fuzzy finder that can filter a list of files, history entries, or other text. | Selecting an item from a long list instead of scrolling through it manually. |
-| [eza](https://github.com/eza-community/eza) (`eza`) | A modern alternative to `ls`, with options for a more informative directory listing. | Seeing file types, permissions, and directory structure at a glance. |
-| [bat](https://github.com/sharkdp/bat) (`bat`) | A `cat`-style file viewer with syntax highlighting and line numbers. | Reading source files and configuration without opening an editor. |
-| [fd](https://github.com/sharkdp/fd) (`fd-find`) | A convenient alternative to `find` for locating files and directories. | Finding files by name or extension with a concise command. |
-| [ripgrep](https://github.com/BurntSushi/ripgrep) (`ripgrep`, command `rg`) | Searches file contents recursively using regular expressions and respects ignore rules by default. | Finding a symbol, string, or configuration value across a repository. |
+| Tool                                                                       | What it does                                                                                       | Where it helps                                                                                                                           |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [Starship](https://starship.rs/) (`starship`)                              | A customizable prompt that works across shells.                                                    | Showing useful context such as the current directory, Git state, and runtime information without hard-coding one prompt for every shell. |
+| [zoxide](https://github.com/ajeetdsouza/zoxide) (`zoxide`)                 | Learns frequently used directories and provides a smarter way to jump between them.                | Moving between projects without repeatedly typing long paths.                                                                            |
+| [fzf](https://github.com/junegunn/fzf) (`fzf`)                             | An interactive fuzzy finder that can filter a list of files, history entries, or other text.       | Selecting an item from a long list instead of scrolling through it manually.                                                             |
+| [eza](https://github.com/eza-community/eza) (`eza`)                        | A modern alternative to `ls`, with options for a more informative directory listing.               | Seeing file types, permissions, and directory structure at a glance.                                                                     |
+| [bat](https://github.com/sharkdp/bat) (`bat`)                              | A `cat`-style file viewer with syntax highlighting and line numbers.                               | Reading source files and configuration without opening an editor.                                                                        |
+| [fd](https://github.com/sharkdp/fd) (`fd-find`)                            | A convenient alternative to `find` for locating files and directories.                             | Finding files by name or extension with a concise command.                                                                               |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) (`ripgrep`, command `rg`) | Searches file contents recursively using regular expressions and respects ignore rules by default. | Finding a symbol, string, or configuration value across a repository.                                                                    |
 
 On Ubuntu, the package name and executable name aren't always identical. `fd-find` is exposed as `fdfind`, and `bat` may be `batcat` to avoid a naming conflict. A shell alias can provide the shorter command, but I check what's actually installed rather than assume the alias exists.
 
@@ -165,17 +166,17 @@ The **GitHub CLI** (`gh`) is installed through mise rather than APT. It brings G
 
 These utilities aren't tied to one programming language, but I reach for them when a project or task needs them:
 
-| Tool | Purpose |
-| --- | --- |
-| `curl` | Makes HTTP requests and transfers data from or to a URL. Useful for testing endpoints, downloading files, and inspecting APIs. |
-| `wget` | Downloads files from the command line, including from remote HTTP and FTP servers. |
-| `jq` | Reads, filters, and transforms JSON from files or command output. |
-| `rsync` | Copies and synchronizes files efficiently, locally or over a remote connection. |
-| `rclone` | Works with remote storage services through a common command-line interface. Useful for copying or synchronizing data between local paths and configured cloud remotes. |
-| `openssh-client` | Provides SSH client tools like `ssh`, `scp`, and `sftp` for connecting to remote machines and transferring files. |
-| `lsof` | Lists open files and the processes using them. Handy when investigating which process has a file or port open. |
-| `psmisc` | Supplies process-related utilities like `pstree`, `killall`, and `fuser`. |
-| `ffmpeg` | A command-line toolkit for inspecting, converting, recording, and processing audio and video. |
+| Tool             | Purpose                                                                                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `curl`           | Makes HTTP requests and transfers data from or to a URL. Useful for testing endpoints, downloading files, and inspecting APIs.                                         |
+| `wget`           | Downloads files from the command line, including from remote HTTP and FTP servers.                                                                                     |
+| `jq`             | Reads, filters, and transforms JSON from files or command output.                                                                                                      |
+| `rsync`          | Copies and synchronizes files efficiently, locally or over a remote connection.                                                                                        |
+| `rclone`         | Works with remote storage services through a common command-line interface. Useful for copying or synchronizing data between local paths and configured cloud remotes. |
+| `openssh-client` | Provides SSH client tools like `ssh`, `scp`, and `sftp` for connecting to remote machines and transferring files.                                                      |
+| `lsof`           | Lists open files and the processes using them. Handy when investigating which process has a file or port open.                                                         |
+| `psmisc`         | Supplies process-related utilities like `pstree`, `killall`, and `fuser`.                                                                                              |
+| `ffmpeg`         | A command-line toolkit for inspecting, converting, recording, and processing audio and video.                                                                          |
 
 I use `curl` and `wget` for different download and request scenarios, `jq` when JSON becomes difficult to read, and `rsync` or `rclone` when files need to move between locations. `ffmpeg` covers media-processing tasks.
 
@@ -255,12 +256,12 @@ There's a trade-off to the `latest` version request. It's convenient for a perso
 
 These are the runtimes and package managers currently listed by mise:
 
-| Tool | Installed version | Why it's in my environment |
-| --- | ---: | --- |
-| [Node.js](https://nodejs.org/en) (`node`) | `26.13.0` | A JavaScript runtime used by a large part of the web ecosystem. It runs development servers, build tools, scripts, and server-side JavaScript applications. My request is `26`, so I'm following the Node 26 line rather than pinning one patch release globally. |
-| [pnpm](https://pnpm.io/) (`pnpm`) | `12.18.0` | A package manager for JavaScript and TypeScript projects. Its content-addressable store and linking approach can share package files between projects, which helps reduce duplicated dependency storage. |
-| [Deno](https://deno.com/) (`deno`) | `2.9.8` | A JavaScript and TypeScript runtime with an integrated set of developer tools. It gives me another runtime and toolchain for scripts and projects that are a good fit for Deno. |
-| [uv](https://docs.astral.sh/uv/) (`uv`) | `0.13.7` | A fast Python package and project manager. It manages project dependencies and virtual environments, works with lockfiles, and installs Python versions when needed. |
+| Tool                                      | Installed version | Why it's in my environment                                                                                                                                                                                                                                        |
+| ----------------------------------------- | ----------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Node.js](https://nodejs.org/en) (`node`) |         `26.13.0` | A JavaScript runtime used by a large part of the web ecosystem. It runs development servers, build tools, scripts, and server-side JavaScript applications. My request is `26`, so I'm following the Node 26 line rather than pinning one patch release globally. |
+| [pnpm](https://pnpm.io/) (`pnpm`)         |         `12.18.0` | A package manager for JavaScript and TypeScript projects. Its content-addressable store and linking approach can share package files between projects, which helps reduce duplicated dependency storage.                                                          |
+| [Deno](https://deno.com/) (`deno`)        |           `2.9.8` | A JavaScript and TypeScript runtime with an integrated set of developer tools. It gives me another runtime and toolchain for scripts and projects that are a good fit for Deno.                                                                                   |
+| [uv](https://docs.astral.sh/uv/) (`uv`)   |          `0.13.7` | A fast Python package and project manager. It manages project dependencies and virtual environments, works with lockfiles, and installs Python versions when needed.                                                                                              |
 
 Node.js and Deno both run JavaScript and TypeScript, but I don't treat them as interchangeable in every project. The project determines which runtime and package manager it expects. Likewise, pnpm isn't a replacement for mise: pnpm manages JavaScript project dependencies, while mise manages the tools that run those projects.
 
@@ -268,11 +269,11 @@ uv plays a similar project-level role for Python. It's the tool I reach for when
 
 ### 4.2 GitHub and other command-line tools
 
-| Tool | Installed version | What it's for |
-| --- | ---: | --- |
-| [GitHub CLI](https://cli.github.com/) (`gh`) | `2.103.3` | Interacting with GitHub from the terminal: repositories, issues, pull requests, releases, and workflow runs. It complements Git rather than replacing it. |
-| [yt-dlp](https://github.com/yt-dlp/yt-dlp) (`yt-dlp`) | `2026.10.26` | A command-line media downloader with support for many video and audio websites. I keep it as a standalone tool instead of tying it to one project. |
-| [Vite+](https://viteplus.dev/guide) (`vite-plus`, CLI `vp`) | `1.5.0` | A unified web-development toolchain. Its `vp` CLI brings together tools like Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task. |
+| Tool                                                        | Installed version | What it's for                                                                                                                                             |
+| ----------------------------------------------------------- | ----------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [GitHub CLI](https://cli.github.com/) (`gh`)                |         `2.103.3` | Interacting with GitHub from the terminal: repositories, issues, pull requests, releases, and workflow runs. It complements Git rather than replacing it. |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) (`yt-dlp`)       |      `2026.10.26` | A command-line media downloader with support for many video and audio websites. I keep it as a standalone tool instead of tying it to one project.        |
+| [Vite+](https://viteplus.dev/guide) (`vite-plus`, CLI `vp`) |           `1.5.0` | A unified web-development toolchain. Its `vp` CLI brings together tools like Vite, Rolldown, Vitest, tsdown, Oxlint, Oxfmt, and Vite Task.                |
 
 Vite+ is worth separating from a normal package manager. It's a broader web toolchain that can coordinate development, builds, tests, linting, formatting, and tasks. I don't need to use every part of that toolchain in every repository; the project and its configuration determine which commands are relevant.
 
@@ -280,12 +281,12 @@ Vite+ is worth separating from a normal package manager. It's a broader web tool
 
 My mise inventory also contains a few tools designed around AI-assisted coding and agent workflows. They're not all the same kind of application, so it's useful to describe them separately.
 
-| Tool | Installed version | Role |
-| --- | ---: | --- |
-| [OpenCode](https://opencode.ai/) (`opencode`) | `2.2.5` | An open-source coding agent available through a terminal interface, with other app integrations also available. It can work with a codebase, propose edits, and use configured model providers. |
-| [oh-my-pi](https://github.com/can1357/oh-my-pi) (`omp`) | `18.17.0` | A coding-agent project built around a terminal workflow, with an IDE-oriented tool surface. Its project documentation describes features like code navigation, language-server integration, and agent tools. |
-| [herdr](https://github.com/herdrdev/herdr) (`herdr`) | `0.9.5` | A workspace and session runtime for coding agents. It keeps terminal sessions organized, preserves layouts, and makes it easier to see which agent sessions need attention. |
-| [9router](https://github.com/decolua/9router) (`9router`) | `0.5.112` | A local AI-provider router for compatible coding tools. It acts as a common endpoint between clients and configured providers, with options for routing and fallback behavior. |
+| Tool                                                      | Installed version | Role                                                                                                                                                                                                         |
+| --------------------------------------------------------- | ----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [OpenCode](https://opencode.ai/) (`opencode`)             |           `2.2.5` | An open-source coding agent available through a terminal interface, with other app integrations also available. It can work with a codebase, propose edits, and use configured model providers.              |
+| [oh-my-pi](https://github.com/can1357/oh-my-pi) (`omp`)   |         `18.17.0` | A coding-agent project built around a terminal workflow, with an IDE-oriented tool surface. Its project documentation describes features like code navigation, language-server integration, and agent tools. |
+| [herdr](https://github.com/herdrdev/herdr) (`herdr`)      |           `0.9.5` | A workspace and session runtime for coding agents. It keeps terminal sessions organized, preserves layouts, and makes it easier to see which agent sessions need attention.                                  |
+| [9router](https://github.com/decolua/9router) (`9router`) |         `0.5.112` | A local AI-provider router for compatible coding tools. It acts as a common endpoint between clients and configured providers, with options for routing and fallback behavior.                               |
 
 These tools sit at different layers. OpenCode and oh-my-pi are coding-agent interfaces. Herdr focuses on the sessions and workspace around agents. 9router focuses on the connection between a compatible client and model providers. Having them installed doesn't mean every project needs all of them; I can choose the one that fits the task.
 
@@ -295,10 +296,10 @@ Because these tools may read project files, run commands, connect to external se
 
 Two packages in the list expose browser-related capabilities to Model Context Protocol (MCP) clients:
 
-| Package | Installed version | Purpose |
-| --- | ---: | --- |
-| [`@playwright/mcp`](https://playwright.dev/docs/getting-started-mcp) | `0.0.84` | A Playwright MCP server that lets an MCP-compatible client control a browser using structured browser and accessibility information. Useful for repeatable browser interactions and web testing workflows. |
-| [`@askjo/camofox-browser-mcp`](https://github.com/jo-inc/camofox-browser/tree/master/mcp) | `1.18.1` | An MCP adapter for the Camofox browser service. It exposes the browser service's tools to an MCP-compatible host. |
+| Package                                                                                   | Installed version | Purpose                                                                                                                                                                                                    |
+| ----------------------------------------------------------------------------------------- | ----------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@playwright/mcp`](https://playwright.dev/docs/getting-started-mcp)                      |          `0.0.84` | A Playwright MCP server that lets an MCP-compatible client control a browser using structured browser and accessibility information. Useful for repeatable browser interactions and web testing workflows. |
+| [`@askjo/camofox-browser-mcp`](https://github.com/jo-inc/camofox-browser/tree/master/mcp) |          `1.18.1` | An MCP adapter for the Camofox browser service. It exposes the browser service's tools to an MCP-compatible host.                                                                                          |
 
 The boundary between the browser and the agent matters. Playwright is a browser automation framework; the MCP server exposes browser actions in a form an MCP client can call. Camofox is a separate browser service with its own implementation and MCP adapter. They're related in that both can make browser interaction available to an agent, but they're not the same browser or server.
 
@@ -375,21 +376,21 @@ The version numbers in this article are a snapshot from **6 November 2026**. The
 
 For completeness, this is the active set of tools and versions from the `mise ls` output I used while writing this article. The `Source` column in that output points to my global configuration file for most tools, while the `npm:`, `pypi:`, and `github:` prefixes identify the installation backend.
 
-| Tool | Version | Version request / source |
-| --- | ---: | --- |
-| `deno` | `2.9.8` | `latest` |
-| `gh` | `2.103.3` | `latest` |
-| `github:can1357/oh-my-pi` | `18.17.0` | `latest` |
-| `herdr` | `0.9.5` | `latest` |
-| `node` | `26.13.0` | `26` |
-| `npm:9router` | `0.5.112` | `latest` |
-| `npm:@askjo/camofox-browser-mcp` | `1.18.1` | `latest` |
-| `npm:@playwright/mcp` | `0.0.84` | `latest` |
-| `opencode` | `2.2.5` | `latest` |
-| `pnpm` | `12.18.0` | `latest` |
-| `npm:vite-plus` | `1.5.0` | `latest` |
-| `pypi:yt-dlp` | `2026.10.26` | `latest` |
-| `uv` | `0.13.7` | `latest` |
+| Tool                             |      Version | Version request / source |
+| -------------------------------- | -----------: | ------------------------ |
+| `deno`                           |      `2.9.8` | `latest`                 |
+| `gh`                             |    `2.103.3` | `latest`                 |
+| `github:can1357/oh-my-pi`        |    `18.17.0` | `latest`                 |
+| `herdr`                          |      `0.9.5` | `latest`                 |
+| `node`                           |    `26.13.0` | `26`                     |
+| `npm:9router`                    |    `0.5.112` | `latest`                 |
+| `npm:@askjo/camofox-browser-mcp` |     `1.18.1` | `latest`                 |
+| `npm:@playwright/mcp`            |     `0.0.84` | `latest`                 |
+| `opencode`                       |      `2.2.5` | `latest`                 |
+| `pnpm`                           |    `12.18.0` | `latest`                 |
+| `npm:vite-plus`                  |      `1.5.0` | `latest`                 |
+| `pypi:yt-dlp`                    | `2026.10.26` | `latest`                 |
+| `uv`                             |     `0.13.7` | `latest`                 |
 
 mise may also display versions that are scheduled for pruning after a version change. I have left those out of the table because they are not the selected version in the current inventory.
 
