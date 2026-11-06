@@ -2,6 +2,7 @@ import { defineConfig, lazyPlugins } from "vite-plus";
 
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
+import contentCollections from "@content-collections/vite";
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
@@ -14,7 +15,7 @@ const config = defineConfig({
     __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
   },
   staged: {
-    "*": "vp check --fix",
+    "*": "vpx scripts/update-post-dates.ts && vp check --fix",
   },
   fmt: {
     ignorePatterns: [".agents/**", "src/routeTree.gen.ts"],
@@ -27,6 +28,7 @@ const config = defineConfig({
   },
   resolve: { tsconfigPaths: true },
   plugins: lazyPlugins(() => [
+    contentCollections(),
     ...(isTest
       ? []
       : [
