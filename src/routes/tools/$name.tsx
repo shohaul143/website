@@ -1,40 +1,57 @@
+import type { ComponentType } from "react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 import { YouTubeThumbnailGrabber } from "#/components/tools/youtube-thumbnail-grabber";
+import { site } from "#/lib/site";
+import { getTool, type ToolSlug } from "#/lib/tools";
+
+const toolComponents: Record<ToolSlug, ComponentType> = {
+  "youtube-thumbnail-grabber": YouTubeThumbnailGrabber,
+};
 
 export const Route = createFileRoute("/tools/$name")({
   loader: ({ params }) => {
-    const isYt = params.name === "youtube-thumbnail-grabber" || params.name === "yt-thumbnail";
-    if (!isYt) {
+    const tool = getTool(params.name);
+
+    if (!tool) {
       throw notFound();
     }
-    return { name: params.name };
+
+    return tool.slug;
   },
-  head: () => ({
-    meta: [
-      { title: "YouTube Thumbnail Grabber | Shohaul" },
-      {
-        name: "description",
-        content: "Download high-resolution YouTube video thumbnails in HD, SD, and HQ.",
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const tool = getTool(params.name);
+
+    return tool
+      ? {
+          meta: [
+            { title: `${tool.name} | ${site.name}` },
+            { name: "description", content: tool.description },
+          ],
+        }
+      : {};
+  },
   component: ToolPage,
 });
 
 function ToolPage() {
+  const slug = Route.useLoaderData();
+  const tool = getTool(slug);
+
+  if (!tool) {
+    return null;
+  }
+
+  const ToolComponent = toolComponents[tool.slug];
+
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          YouTube Thumbnail Grabber
-        </h1>
-        <p className="mt-2 text-base text-muted-foreground">
-          Paste any YouTube video link or ID to preview and download full-resolution thumbnails.
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{tool.name}</h1>
+        <p className="mt-2 text-base text-muted-foreground">{tool.description}</p>
       </div>
 
-      <YouTubeThumbnailGrabber />
+      <ToolComponent />
     </div>
   );
 }
